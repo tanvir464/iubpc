@@ -1,0 +1,186 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Modern Premium Theme - Light Mode */
+  --background: oklch(0.98 0.01 240);
+  --foreground: oklch(0.15 0.05 240);
+
+  /* Primary - Modern Electric Violet */
+  --primary: oklch(0.6 0.22 270);
+  --primary-foreground: oklch(0.98 0 0);
+
+  /* Secondary - Vibrant Green from Logo */
+  --secondary: oklch(0.65 0.18 150);
+  --secondary-foreground: oklch(0.98 0 0);
+
+  /* Accent - Soft Blue/Green mix */
+  --accent: oklch(0.95 0.05 240);
+  --accent-foreground: oklch(0.2 0.1 260);
+
+  --border: oklch(0.9 0.02 240);
+  --muted: oklch(0.96 0.01 240);
+  --muted-foreground: oklch(0.5 0.05 240);
+
+  --radius: 0.75rem;
+}
+
+.dark {
+  /* Modern Premium Theme - Dark Mode */
+  --background: oklch(0.12 0.05 260);
+  /* Deep Navy */
+  --foreground: oklch(0.98 0.01 240);
+
+  --primary: oklch(0.6 0.2 260);
+  --primary-foreground: oklch(0.98 0 0);
+
+  --secondary: oklch(0.7 0.18 150);
+  --secondary-foreground: oklch(0.1 0.05 150);
+
+  --accent: oklch(0.2 0.05 260);
+  --accent-foreground: oklch(0.98 0 0);
+
+  --border: oklch(0.25 0.05 260);
+  --muted: oklch(0.2 0.05 260);
+  --muted-foreground: oklch(0.7 0.05 240);
+}
+
+@theme inline {
+  --font-sans: 'Inter', 'Inter Fallback', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'JetBrains Mono Fallback', monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --radius-md: var(--radius);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    letter-spacing: -0.01em;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-sans font-bold tracking-tight;
+  }
+
+  h1 {
+    @apply text-4xl md:text-6xl lg:text-7xl leading-tight;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl lg:text-5xl leading-tight;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl;
+  }
+
+  p {
+    @apply text-base leading-relaxed text-muted-foreground;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-background/80 backdrop-blur-xl border border-border/50 shadow-lg;
+  }
+
+  .glass-dark {
+    @apply bg-black/40 backdrop-blur-xl border border-white/20 shadow-2xl;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+  }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  .animate-float-slow {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-float-medium {
+    animation: float 5s ease-in-out infinite reverse;
+  }
+
+  .animate-float-fast {
+    animation: float 4s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-spin-slow {
+    animation: spin 12s linear infinite;
+  }
+
+  .animate-spin-reverse-slow {
+    animation: spin 15s linear infinite reverse;
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  @keyframes pulse-glow {
+
+    0%,
+    100% {
+      opacity: 0.5;
+      transform: scale(1);
+    }
+
+    50% {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
