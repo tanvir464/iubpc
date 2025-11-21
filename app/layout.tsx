@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import Header from '@/components/header'
 import Footer from '@/components/footer'
+import { AuthProvider } from '@/components/providers/session-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' })
@@ -22,10 +23,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} ${jetbrainsMono.variable}`}>
-        <Header />
-        {children}
-        <Footer />
-        <Analytics />
+        <AuthProvider>
+          <Header />
+          {children}
+          <Footer />
+          <Analytics />
+        </AuthProvider>
       </body>
     </html>
   )

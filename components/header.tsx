@@ -28,7 +28,6 @@ export default function Header() {
     { label: 'Gallery', href: '/gallery' },
     { label: 'About', href: '/about' },
     { label: 'People', href: '/people' },
-    { label: 'Admin', href: '/admin' },
   ]
 
   return (

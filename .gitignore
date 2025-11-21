@@ -84,3 +84,12 @@ Desktop.ini
 tmp/
 temp/
 *.tmp
+
+# Prisma
+/lib/generated/prisma
+
+# Database (SQLite - for production use PostgreSQL)
+prisma/*.db
+prisma/*.db-journal
+*.db
+*.db-journal

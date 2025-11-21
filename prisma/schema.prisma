@@ -1,0 +1,254 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  MODERATOR
+  MEMBER
+}
+
+enum ContestStatus {
+  UPCOMING
+  ONGOING
+  COMPLETED
+}
+
+enum BlogCategory {
+  ALGORITHMS
+  DATA_STRUCTURES
+  WEB_DEVELOPMENT
+  MOBILE_DEVELOPMENT
+  AI_ML
+  CYBERSECURITY
+  COMPETITIVE_PROGRAMMING
+  TUTORIAL
+  NEWS
+  OTHER
+}
+
+enum GalleryCategory {
+  ALL
+  CONTESTS
+  WORKSHOPS
+  EVENTS
+  MEETUPS
+  HACKATHONS
+  CELEBRATIONS
+}
+
+// User Model
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  username      String   @unique
+  password      String   // Hashed password
+  fullName      String
+  role          UserRole @default(MEMBER)
+  studentId     String?  @unique
+  department    String?
+  batch         String?
+  avatar        String?  // Cloudinary URL
+  bio           String?
+
+  // Social links
+  github        String?
+  linkedin      String?
+  codeforces    String?
+
+  // Stats
+  totalScore    Int      @default(0)
+  contestsJoined Int     @default(0)
+  rank          Int?
+
+  // Badges
+  badges        String?  // JSON array of badges
+
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  lastLoginAt   DateTime?
+
+  // Relations
+  blogs         Blog[]
+  announcements Announcement[]
+  contestResults ContestResult[]
+  galleryImages GalleryImage[]
+
+  @@index([email])
+  @@index([username])
+  @@index([role])
+  @@index([totalScore])
+}
+
+// Contest Model
+model Contest {
+  id            String        @id @default(cuid())
+  title         String
+  description   String
+  platform      String        // e.g., "Codeforces", "AtCoder", "Custom"
+  contestUrl    String?
+  status        ContestStatus @default(UPCOMING)
+  difficulty    String?       // e.g., "Beginner", "Intermediate", "Advanced"
+
+  // Dates
+  startDate     DateTime
+  endDate       DateTime
+  registrationDeadline DateTime?
+
+  // Stats
+  participants  Int           @default(0)
+  problems      Int           @default(0)
+  duration      Int?          // Duration in minutes
+
+  // Additional info
+  prize         String?
+  rules         String?       // Long text or JSON
+  banner        String?       // Cloudinary URL
+
+  // Timestamps
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  results       ContestResult[]
+
+  @@index([status])
+  @@index([startDate])
+}
+
+// Contest Results
+model ContestResult {
+  id            String   @id @default(cuid())
+  userId        String
+  contestId     String
+  rank          Int
+  score         Int
+  solved        Int      @default(0)
+  penalty       Int      @default(0)
+
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contest       Contest  @relation(fields: [contestId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contestId])
+  @@index([contestId])
+  @@index([score])
+  @@index([rank])
+}
+
+// Blog Model
+model Blog {
+  id            String       @id @default(cuid())
+  title         String
+  slug          String       @unique
+  excerpt       String
+  content       String       // Full blog content (Markdown or HTML)
+  coverImage    String?      // Cloudinary URL
+  category      BlogCategory @default(OTHER)
+  tags          String?      // JSON array of tags
+
+  // Author
+  authorId      String
+  author        User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  // Stats
+  views         Int          @default(0)
+  likes         Int          @default(0)
+
+  // Publishing
+  published     Boolean      @default(false)
+  publishedAt   DateTime?
+
+  // Timestamps
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([slug])
+  @@index([category])
+  @@index([published])
+  @@index([authorId])
+  @@index([publishedAt])
+}
+
+// Announcement Model
+model Announcement {
+  id            String   @id @default(cuid())
+  title         String
+  content       String   // Full announcement content
+  type          String   @default("general") // e.g., "urgent", "general", "contest", "event"
+  priority      Int      @default(0)         // Higher number = higher priority
+  pinned        Boolean  @default(false)
+
+  // Author
+  authorId      String
+  author        User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  // Visibility
+  published     Boolean  @default(true)
+  expiresAt     DateTime?
+
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([pinned])
+  @@index([priority])
+  @@index([createdAt])
+  @@index([authorId])
+}
+
+// Gallery Model
+model GalleryImage {
+  id            String          @id @default(cuid())
+  title         String
+  description   String?
+  imageUrl      String          // Cloudinary URL
+  publicId      String          // Cloudinary public ID for deletion
+  category      GalleryCategory @default(ALL)
+  eventDate     DateTime?
+
+  // Uploader
+  uploaderId    String
+  uploader      User            @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+
+  // Stats
+  views         Int             @default(0)
+  likes         Int             @default(0)
+
+  // Timestamps
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([category])
+  @@index([eventDate])
+  @@index([uploaderId])
+  @@index([createdAt])
+}
+
+// Settings/Config Model (for app-wide settings)
+model Setting {
+  id            String   @id @default(cuid())
+  key           String   @unique
+  value         String   // JSON value
+  description   String?
+
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([key])
+}

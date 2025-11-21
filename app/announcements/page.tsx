@@ -1,4 +1,4 @@
-import { AlertCircle, Calendar, Megaphone, Zap, Pin } from 'lucide-react'
+import { Calendar, Megaphone, Zap, Pin } from 'lucide-react'
 
 const announcements = [
   {
@@ -189,9 +189,11 @@ export default function AnnouncementsPage() {
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-secondary/0 group-hover:from-primary/5 group-hover:to-secondary/5 transition-all duration-500 rounded-2xl" />
 
                   <div className="relative z-10 space-y-4">
-                    <span className="text-xs font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent px-4 py-2 rounded-full border border-primary/20">
-                      {config.label}
-                    </span>
+                    <div>
+                      <span className="text-xs font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent px-4 py-2 rounded-full border border-primary/20">
+                        {config.label}
+                      </span>
+                    </div>
 
                     <h3 className="font-bold text-lg group-hover:text-secondary transition-colors">
                       {announcement.title}
